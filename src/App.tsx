@@ -4,16 +4,39 @@ import { EventsPage } from "./pages/EventsPage";
 import { CalendarPage } from "./pages/CalendarPage";
 import { Home } from "./pages/Home";
 import { AttendeesPage } from "./pages/AttendeesPage";
-import { EventDetailsPage } from "./components/EventDetailsPage";
+import { EventDetails } from "./components/EventDetailsPage";
+import { Dashboard } from "./components/Dashboard/Dashboard";
+import { EventList } from "./components/EventList";
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/eventsPage" element={<EventsPage />} />
+      <Route
+        path="/"
+        element={
+          <Dashboard>
+            <Home />
+          </Dashboard>
+        }
+      />
+      <Route
+        path="/eventsPage"
+        element={
+          <Dashboard>
+            <EventList />
+          </Dashboard>
+        }
+      />
       <Route path="/calendarPage" element={<CalendarPage />} />
       <Route path="/attendeesPage" element={<AttendeesPage />} />
-      <Route path="/events/:id" element={<EventDetailsPage />} />
+      <Route
+        path="/events/:id"
+        element={
+          <Dashboard>
+            <EventDetails />
+          </Dashboard>
+        }
+      />
     </Routes>
   );
 }

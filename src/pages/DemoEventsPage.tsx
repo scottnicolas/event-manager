@@ -1,36 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { fetchEvents } from "../api/events";
-import { Card } from "../components/Card";
+import { fetchEvents } from "../services/eventService";
+import { Event } from "../types/Event";
 import { Link } from "react-router-dom";
 
-interface Event {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
-}
-
 export const DemoEventsPage = () => {
-  const [events, setEvents] = useState<Event[]>([
-    {
-      id: 1,
-      title: "Tech Conference",
-      description: "This is event one.",
-      date: "04/28/2025",
-    },
-    {
-      id: 2,
-      title: "UHH Computer Science Fundraiser",
-      description: "This is event two.",
-      date: "04/28/2025",
-    },
-    {
-      id: 3,
-      title: "UHH Hackathon",
-      description: "This is event three.",
-      date: "04/29/2025",
-    },
-  ]);
+  const [events, setEvents] = useState<Event[]>([]);
 
   useEffect(() => {
     fetchEvents()
@@ -49,13 +23,11 @@ export const DemoEventsPage = () => {
           <p>Loading events...</p>
         ) : (
           events.map((event) => (
-            <Link key={event.id} to={`/events/${event.id}`}>
-              <Card
-                key={event.id}
-                title={event.title}
-                description={event.description}
-                date={event.date}
-              />
+            <Link key={event.event_id} to={`/events/${event.event_id}`}>
+              <div className="bg-white rounded-lg border border-stone-300 shadow p-4">
+                <h3 className="text-lg font-bold">{event.event_name}</h3>
+                <p className="text-sm text-gray-600">{event.start_date}</p>
+              </div>
             </Link>
           ))
         )}
