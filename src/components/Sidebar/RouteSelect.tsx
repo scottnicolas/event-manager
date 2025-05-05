@@ -1,7 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { FiHome, FiList, FiCalendar, FiUsers } from "react-icons/fi";
 import type { IconType } from "react-icons";
-import path from "path";
 
 const routes = [
   { title: "Dashboard", path: "/", Icon: FiHome },

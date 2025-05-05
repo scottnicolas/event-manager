@@ -1,4 +1,3 @@
-import React from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
 export const AccountToggle = () => {

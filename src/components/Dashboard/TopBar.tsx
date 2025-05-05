@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FiCalendar } from "react-icons/fi";
 
 function getDate() {
@@ -20,7 +20,7 @@ function greeting() {
 }
 
 export const TopBar = () => {
-  const [currentDate, setCurrentDate] = useState(getDate());
+  const [currentDate] = useState(getDate());
 
   return (
     <div className="border-b px-4 mb-2 mt-2 pb-4 border-stone-300">

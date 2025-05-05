@@ -3,8 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Event } from "../types/Event";
 import { Venue } from "../types/Venue";
-import { Host } from "../types/Host";
-import { Registration } from "../types/Registration";
 import { fetchEvents } from "../services/eventService";
 import { fetchVenues } from "../services/venueService";
 import { fetchHosts } from "../services/hostService";
