@@ -1,28 +1,21 @@
-import api from "../api/api";
+import axios from "axios";
 import { Registration } from "../types/Registration";
-
-const endpoint = "registrations/";
-
+const REGISTRATION_URL =
+  "https://eventmanagementsystemdjangoproject.onrender.com/api/registrations/";
 export const fetchRegistrations = async (): Promise<Registration[]> =>
-  (await api.get(endpoint)).data;
-export const fetchRegistrationById = async (
-  id: number
-): Promise<Registration> => (await api.get(`${endpoint}${id}/`)).data;
+  (await axios.get(`${REGISTRATION_URL}?format=json`)).data;
+export const getRegistrationById = async (
+  user: number
+): Promise<Registration> =>
+  (await axios.get(`${REGISTRATION_URL}${user}/?format=json`)).data;
 export const createRegistration = async (
-  data: Partial<Registration>
-): Promise<Registration> => (await api.post(endpoint, data)).data;
+  data: Registration
+): Promise<Registration> => (await axios.post(REGISTRATION_URL, data)).data;
 export const updateRegistration = async (
-  id: number,
+  user: number,
   data: Partial<Registration>
-): Promise<Registration> => (await api.put(`${endpoint}${id}/`, data)).data;
-export const deleteRegistration = async (id: number): Promise<void> => {
-  await api.delete(`${endpoint}${id}/`);
-};
-
-export default {
-  fetchRegistrations,
-  fetchRegistrationById,
-  createRegistration,
-  updateRegistration,
-  deleteRegistration,
+): Promise<Registration> =>
+  (await axios.put(`${REGISTRATION_URL}${user}/`, data)).data;
+export const deleteRegistration = async (user: number): Promise<void> => {
+  await axios.delete(`${REGISTRATION_URL}${user}/`);
 };

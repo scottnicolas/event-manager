@@ -1,108 +1,62 @@
-// ✅ Updated EventList.tsx to use daisyUI 'table with border and background' template
+// ✅ Example integration: using CRUD services in EventList to delete an event and refresh list
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { Event } from "../types/Event";
 import { fetchEvents, deleteEvent } from "../services/eventService";
-import { fetchHosts } from "../services/hostService";
-import { fetchVenues } from "../services/venueService";
-import EventForm from "./EventForm";
+import { Link } from "react-router-dom";
 
 export const EventList: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
-  const [hosts, setHosts] = useState<any[]>([]);
-  const [venues, setVenues] = useState<any[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const loadEvents = async () => {
+    setLoading(true);
     const data = await fetchEvents();
     setEvents(data);
+    setLoading(false);
   };
 
   useEffect(() => {
     loadEvents();
-    fetchHosts().then(setHosts);
-    fetchVenues().then(setVenues);
   }, []);
 
-  const getVenueDisplay = (eventId: number) => {
-    const host = hosts.find((h) => h.event_id === eventId);
-    const venue = host
-      ? venues.find((v) => v.venue_id === host.venue_id)
-      : null;
-    return venue ? `Venue ${venue.venue_id}` : "-";
-  };
-
-  const getHostDisplay = (eventId: number) => {
-    const host = hosts.find((h) => h.event_id === eventId);
-    return host ? `Host for Venue ${host.venue_id}` : "-";
-  };
-
   const handleDelete = async (id: number) => {
-    await deleteEvent(id);
-    loadEvents();
+    if (window.confirm("Are you sure you want to delete this event?")) {
+      await deleteEvent(id);
+      await loadEvents();
+    }
   };
 
   return (
     <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Events</h1>
-        <button
-          onClick={() => {
-            setSelectedEvent(null);
-            setShowForm(true);
-          }}
-          className="btn btn-primary"
-        >
-          + Add Event
-        </button>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="table bg-white border table-bordered rounded-lg table-base-100 w-full">
-          <thead className="bg-base-200 rounded-lg">
+      <h1 className="text-2xl font-bold mb-4">Events</h1>
+      {loading ? (
+        <p>Loading events...</p>
+      ) : (
+        <table className="table-auto w-full border">
+          <thead>
             <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Start Date</th>
-              <th>Venue</th>
-              <th>Host</th>
-              <th>Actions</th>
+              <th className="border p-2 text-left">Name</th>
+              <th className="border p-2 text-left">Start Date</th>
+              <th className="border p-2 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
             {events.map((event) => (
               <tr key={event.event_id}>
-                <td>{event.event_id}</td>
-                <td>
-                  <Link
-                    to={`/events/${event.event_id}`}
-                    className="btn btn-sm btn-ghost text-primary"
-                  >
-                    {event.event_name}
-                  </Link>
+                <td className="border p-2">{event.event_name}</td>
+                <td className="border p-2">
+                  {new Date(event.start_date).toLocaleDateString()}
                 </td>
-                <td>{new Date(event.start_date).toLocaleDateString()}</td>
-                <td>{getVenueDisplay(event.event_id)}</td>
-                <td>{getHostDisplay(event.event_id)}</td>
-                <td className="space-x-1">
+                <td className="border p-2 flex gap-2">
                   <Link
                     to={`/events/${event.event_id}`}
-                    className="btn btn-sm btn-ghost text-primary"
+                    className="text-blue-600 underline"
                   >
                     View
                   </Link>
                   <button
-                    onClick={() => {
-                      setSelectedEvent(event);
-                      setShowForm(true);
-                    }}
-                    className="btn btn-sm btn-warning text-white"
-                  >
-                    Edit
-                  </button>
-                  <button
                     onClick={() => handleDelete(event.event_id)}
-                    className="btn btn-sm btn-error text-white"
+                    className="text-red-600 underline"
                   >
                     Delete
                   </button>
@@ -111,18 +65,11 @@ export const EventList: React.FC = () => {
             ))}
           </tbody>
         </table>
-      </div>
-      {showForm && (
-        <EventForm
-          event={selectedEvent}
-          onClose={() => {
-            setShowForm(false);
-            loadEvents();
-          }}
-        />
       )}
     </div>
   );
 };
 
 export default EventList;
+
+// ✅ Now EventList uses fetchEvents + deleteEvent from services, deletes with confirmation and reloads

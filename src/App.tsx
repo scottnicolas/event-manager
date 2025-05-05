@@ -1,12 +1,10 @@
-import React from "react";
 import { Routes, Route } from "react-router-dom";
-import { EventsPage } from "./pages/EventsPage";
 import { CalendarPage } from "./pages/CalendarPage";
 import { Home } from "./pages/Home";
 import { AttendeesPage } from "./pages/AttendeesPage";
-import { EventDetails } from "./components/EventDetailsPage";
 import { Dashboard } from "./components/Dashboard/Dashboard";
 import { EventList } from "./components/EventList";
+import EventDetailsPage from "./pages/EventDetailsPage";
 
 function App() {
   return (
@@ -33,7 +31,7 @@ function App() {
         path="/events/:id"
         element={
           <Dashboard>
-            <EventDetails />
+            <EventDetailsPage />
           </Dashboard>
         }
       />

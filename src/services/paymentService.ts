@@ -1,26 +1,18 @@
-import api from "../api/api";
+import axios from "axios";
 import { Payment } from "../types/Payment";
-
-const endpoint = "payments/";
-
+const PAYMENT_URL =
+  "https://eventmanagementsystemdjangoproject.onrender.com/api/payments/";
 export const fetchPayments = async (): Promise<Payment[]> =>
-  (await api.get(endpoint)).data;
-export const fetchPaymentById = async (id: number): Promise<Payment> =>
-  (await api.get(`${endpoint}${id}/`)).data;
-export const createPayment = async (data: Partial<Payment>): Promise<Payment> =>
-  (await api.post(endpoint, data)).data;
+  (await axios.get(`${PAYMENT_URL}?format=json`)).data;
+export const getPaymentById = async (id: number): Promise<Payment> =>
+  (await axios.get(`${PAYMENT_URL}${id}/?format=json`)).data;
+export const createPayment = async (
+  data: Omit<Payment, "payment_id">
+): Promise<Payment> => (await axios.post(PAYMENT_URL, data)).data;
 export const updatePayment = async (
   id: number,
   data: Partial<Payment>
-): Promise<Payment> => (await api.put(`${endpoint}${id}/`, data)).data;
+): Promise<Payment> => (await axios.put(`${PAYMENT_URL}${id}/`, data)).data;
 export const deletePayment = async (id: number): Promise<void> => {
-  await api.delete(`${endpoint}${id}/`);
-};
-
-export default {
-  fetchPayments,
-  fetchPaymentById,
-  createPayment,
-  updatePayment,
-  deletePayment,
+  await axios.delete(`${PAYMENT_URL}${id}/`);
 };

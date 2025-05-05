@@ -1,203 +1,126 @@
-// ✅ Added null/undefined checks for event.end_date and event.start_date in EventForm.tsx
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Event } from "../types/Event";
-import { fetchVenues } from "../services/venueService";
-import { fetchHosts, createHost, updateHost } from "../services/hostService";
-import {
-  fetchSponsors,
-  createSponsor,
-  deleteSponsor,
-} from "../services/sponsorService";
-import { createEvent, updateEvent } from "../services/eventService";
 
-type Props = {
-  event: Event | null;
+interface EventFormProps {
+  event?: Event | null;
+  onSubmit: (event: Omit<Event, "event_id">) => void;
   onClose: () => void;
-};
+}
 
-const EventForm: React.FC<Props> = ({ event, onClose }) => {
-  const [name, setName] = useState(event ? event.event_name : "");
-  const [startDate, setStartDate] = useState(
-    event && event.start_date ? event.start_date.slice(0, 10) : ""
-  );
-  const [endDate, setEndDate] = useState(
-    event && event.end_date ? event.end_date.slice(0, 10) : ""
-  );
-  const [venueId, setVenueId] = useState<number | null>(null);
-  const [sponsorSelections, setSponsorSelections] = useState<
-    { sponsor_id: number; selected: boolean }[]
-  >([]);
+interface EventFormState {
+  event_name: string;
+  start_date: string;
+  end_date: string;
+  event_category: string;
+  max_attendees: number;
+}
 
-  const [venues, setVenues] = useState<any[]>([]);
-  const [sponsors, setSponsors] = useState<any[]>([]);
+export const EventForm: React.FC<EventFormProps> = ({
+  event,
+  onSubmit,
+  onClose,
+}) => {
+  const [formData, setFormData] = useState<EventFormState>({
+    event_name: "",
+    start_date: "",
+    end_date: "",
+    event_category: "",
+    max_attendees: 0,
+  });
 
   useEffect(() => {
-    fetchVenues().then(setVenues);
-    fetchSponsors().then((fetched) => {
-      const initialSelections = fetched.map((s) => ({
-        sponsor_id: s.sponsor_id,
-        selected: false,
-      }));
-      setSponsors(fetched);
-      setSponsorSelections(initialSelections);
-    });
     if (event) {
-      fetchHosts().then((hosts) => {
-        const host = hosts.find((h) => h.event === event.event_id);
-        if (host) setVenueId(host.venue);
+      setFormData({
+        event_name: event.event_name,
+        start_date: event.start_date,
+        end_date: event.end_date ?? "",
+        event_category: event.event_category ?? "",
+        max_attendees: event.max_attendees,
       });
     }
   }, [event]);
 
-  const toggleSponsor = (id: number) => {
-    setSponsorSelections((prev) =>
-      prev.map((s) =>
-        s.sponsor_id === id ? { ...s, selected: !s.selected } : s
-      )
-    );
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "max_attendees" ? Number(value) : value,
+    }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    let savedEvent = event;
-    if (event) {
-      savedEvent = await updateEvent(event.event_id, {
-        ...event,
-        event_name: name,
-        start_date: startDate,
-        end_date: endDate,
-      });
-    } else {
-      savedEvent = await createEvent({
-        event_name: name,
-        start_date: startDate,
-        end_date: endDate,
-      });
-    }
-
-    if (venueId !== null) {
-      const existingHost = (await fetchHosts()).find(
-        (h) => h.event === savedEvent.event_id
-      );
-      if (existingHost) {
-        await updateHost(existingHost.event, {
-          event: savedEvent.event_id,
-          venue: venueId,
-        });
-      } else {
-        await createHost({ event: savedEvent.event_id, venue: venueId });
-      }
-    }
-
-    const selectedSponsors = sponsorSelections
-      .filter((s) => s.selected)
-      .map((s) => s.sponsor_id);
-    const currentSponsors = (await fetchSponsors()).filter((s) =>
-      selectedSponsors.includes(s.sponsor_id)
-    );
-
-    for (const sponsor of sponsors) {
-      if (
-        selectedSponsors.includes(sponsor.sponsor_id) &&
-        !currentSponsors.some((cs) => cs.sponsor_id === sponsor.sponsor_id)
-      ) {
-        await createSponsor({ sponsor_id: sponsor.sponsor_id });
-      } else if (
-        !selectedSponsors.includes(sponsor.sponsor_id) &&
-        currentSponsors.some((cs) => cs.sponsor_id === sponsor.sponsor_id)
-      ) {
-        await deleteSponsor(sponsor.sponsor_id);
-      }
-    }
-
-    onClose();
+    onSubmit(formData);
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg p-6 w-[450px] relative max-h-[90vh] overflow-y-auto">
-        <h2 className="text-xl font-bold mb-4">
-          {event ? "Edit Event" : "Add Event"}
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h2 className="text-lg font-bold mb-4">
+          {event ? "Edit Event" : "Create Event"}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium">Name</label>
+            <label className="block text-sm font-medium">Event Name</label>
             <input
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              name="event_name"
+              value={formData.event_name}
+              onChange={handleChange}
+              className="input input-bordered w-full"
               required
-              className="w-full border px-3 py-2 rounded"
             />
           </div>
           <div>
             <label className="block text-sm font-medium">Start Date</label>
             <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
+              type="datetime-local"
+              name="start_date"
+              value={formData.start_date}
+              onChange={handleChange}
+              className="input input-bordered w-full"
               required
-              className="w-full border px-3 py-2 rounded"
             />
           </div>
           <div>
             <label className="block text-sm font-medium">End Date</label>
             <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              required
-              className="w-full border px-3 py-2 rounded"
+              type="datetime-local"
+              name="end_date"
+              value={formData.end_date}
+              onChange={handleChange}
+              className="input input-bordered w-full"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Venue</label>
-            <select
-              value={venueId ?? ""}
-              onChange={(e) => setVenueId(Number(e.target.value))}
-              required
-              className="w-full border px-3 py-2 rounded"
-            >
-              <option value="">Select a venue</option>
-              {venues.map((v) => (
-                <option
-                  key={v.venue_id}
-                  value={v.venue_id}
-                >{`Venue ${v.venue_id}`}</option>
-              ))}
-            </select>
+            <label className="block text-sm font-medium">Category</label>
+            <input
+              type="text"
+              name="event_category"
+              value={formData.event_category}
+              onChange={handleChange}
+              className="input input-bordered w-full"
+            />
           </div>
           <div>
-            <label className="block text-sm font-medium">Sponsors</label>
-            <div className="flex flex-col space-y-1 max-h-32 overflow-y-auto border rounded p-2">
-              {sponsorSelections.map((s) => (
-                <label
-                  key={s.sponsor_id}
-                  className="flex items-center gap-2 text-sm"
-                >
-                  <input
-                    type="checkbox"
-                    checked={s.selected}
-                    onChange={() => toggleSponsor(s.sponsor_id)}
-                  />
-                  {`Sponsor ${s.sponsor_id}`}
-                </label>
-              ))}
-            </div>
+            <label className="block text-sm font-medium">Max Attendees</label>
+            <input
+              type="number"
+              name="max_attendees"
+              value={formData.max_attendees}
+              onChange={handleChange}
+              className="input input-bordered w-full"
+              min={1}
+              required
+            />
           </div>
-          <div className="flex justify-end space-x-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 rounded bg-gray-300"
-            >
+          <div className="flex justify-end gap-2">
+            <button type="button" onClick={onClose} className="btn btn-ghost">
               Cancel
             </button>
-            <button
-              type="submit"
-              className="px-4 py-2 rounded bg-blue-500 text-white"
-            >
+            <button type="submit" className="btn btn-primary">
               Save
             </button>
           </div>

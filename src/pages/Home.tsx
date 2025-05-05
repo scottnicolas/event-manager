@@ -1,14 +1,15 @@
-// ✅ Updated HomeDashboard.tsx to sort upcoming events by start_date ascending
+// ✅ Updated Home.tsx to match new services and types
 import React, { useEffect, useState } from "react";
 import { fetchEvents } from "../services/eventService";
 import { fetchUsers } from "../services/userService";
 import { fetchVenues } from "../services/venueService";
+import { Event } from "../types/Event";
 
 export const Home: React.FC = () => {
-  const [eventCount, setEventCount] = useState(0);
-  const [userCount, setUserCount] = useState(0);
-  const [venueCount, setVenueCount] = useState(0);
-  const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
+  const [eventCount, setEventCount] = useState<number>(0);
+  const [userCount, setUserCount] = useState<number>(0);
+  const [venueCount, setVenueCount] = useState<number>(0);
+  const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
 
   useEffect(() => {
     fetchEvents().then((events) => {
@@ -21,6 +22,7 @@ export const Home: React.FC = () => {
         );
       setUpcomingEvents(upcoming);
     });
+
     fetchUsers().then((users) => setUserCount(users.length));
     fetchVenues().then((venues) => setVenueCount(venues.length));
   }, []);

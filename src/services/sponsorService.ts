@@ -1,26 +1,18 @@
-import api from "../api/api";
+import axios from "axios";
 import { Sponsor } from "../types/Sponsor";
-
-const endpoint = "sponsors/";
-
+const SPONSOR_URL =
+  "https://eventmanagementsystemdjangoproject.onrender.com/api/sponsors/";
 export const fetchSponsors = async (): Promise<Sponsor[]> =>
-  (await api.get(endpoint)).data;
-export const fetchSponsorById = async (id: number): Promise<Sponsor> =>
-  (await api.get(`${endpoint}${id}/`)).data;
-export const createSponsor = async (data: Partial<Sponsor>): Promise<Sponsor> =>
-  (await api.post(endpoint, data)).data;
+  (await axios.get(`${SPONSOR_URL}?format=json`)).data;
+export const getSponsorById = async (id: number): Promise<Sponsor> =>
+  (await axios.get(`${SPONSOR_URL}${id}/?format=json`)).data;
+export const createSponsor = async (
+  data: Omit<Sponsor, "sponsor_id">
+): Promise<Sponsor> => (await axios.post(SPONSOR_URL, data)).data;
 export const updateSponsor = async (
   id: number,
   data: Partial<Sponsor>
-): Promise<Sponsor> => (await api.put(`${endpoint}${id}/`, data)).data;
+): Promise<Sponsor> => (await axios.put(`${SPONSOR_URL}${id}/`, data)).data;
 export const deleteSponsor = async (id: number): Promise<void> => {
-  await api.delete(`${endpoint}${id}/`);
-};
-
-export default {
-  fetchSponsors,
-  fetchSponsorById,
-  createSponsor,
-  updateSponsor,
-  deleteSponsor,
+  await axios.delete(`${SPONSOR_URL}${id}/`);
 };

@@ -1,26 +1,17 @@
-import api from "../api/api";
+import axios from "axios";
 import { Support } from "../types/Support";
-
-const endpoint = "supports/";
-
+const SUPPORT_URL =
+  "https://eventmanagementsystemdjangoproject.onrender.com/api/supports/";
 export const fetchSupports = async (): Promise<Support[]> =>
-  (await api.get(endpoint)).data;
-export const fetchSupportById = async (id: number): Promise<Support> =>
-  (await api.get(`${endpoint}${id}/`)).data;
-export const createSupport = async (data: Partial<Support>): Promise<Support> =>
-  (await api.post(endpoint, data)).data;
+  (await axios.get(`${SUPPORT_URL}?format=json`)).data;
+export const getSupportById = async (event: number): Promise<Support> =>
+  (await axios.get(`${SUPPORT_URL}${event}/?format=json`)).data;
+export const createSupport = async (data: Support): Promise<Support> =>
+  (await axios.post(SUPPORT_URL, data)).data;
 export const updateSupport = async (
-  id: number,
+  event: number,
   data: Partial<Support>
-): Promise<Support> => (await api.put(`${endpoint}${id}/`, data)).data;
-export const deleteSupport = async (id: number): Promise<void> => {
-  await api.delete(`${endpoint}${id}/`);
-};
-
-export default {
-  fetchSupports,
-  fetchSupportById,
-  createSupport,
-  updateSupport,
-  deleteSupport,
+): Promise<Support> => (await axios.put(`${SUPPORT_URL}${event}/`, data)).data;
+export const deleteSupport = async (event: number): Promise<void> => {
+  await axios.delete(`${SUPPORT_URL}${event}/`);
 };
