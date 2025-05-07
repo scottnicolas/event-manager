@@ -76,7 +76,7 @@ export const EventList: React.FC = () => {
                 </td>
                 <td className="border-l border-b border-stone-300 p-3 flex gap-2">
                   <button onClick={() => handleDelete(event.event_id)}>
-                    <FiTrash2 />
+                    <FiTrash2 className="hover:text-red-600 hover:cursor-pointer" />
                   </button>
                 </td>
               </tr>

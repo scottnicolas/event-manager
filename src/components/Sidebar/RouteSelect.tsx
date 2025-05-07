@@ -41,9 +41,9 @@ const Route = ({
 }) => {
   return (
     <div
-      className={`flex items-center justify-start gap-2 w-full rounded-lg px-2 py-1 text-sm relative transition-all duration-300 ${
+      className={`flex items-center justify-start gap-2 w-full rounded-lg px-2 py-1 my-0.5 text-sm relative transition-all duration-300 ${
         selected
-          ? "from-blue-600 via-blue-500 to-blue-400 bg-gradient-to-tr text-white shadow font-semibold"
+          ? "bg-stone-200 font-medium bg-gradient-to-tr text-stone-900"
           : "hover:bg-stone-200 bg-transparent text-stone-600"
       }`}
     >

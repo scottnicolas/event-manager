@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
+import EventForm from "../EventForm";
 
 function getDate() {
   const today = new Date();
@@ -30,6 +31,7 @@ function emoji() {
 
 export const TopBar = () => {
   const [currentDate] = useState(getDate());
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <div className="border-b px-4 mb-2 mt-2 pb-4 border-stone-300">
@@ -39,14 +41,23 @@ export const TopBar = () => {
           <span className="text-xs block text-stone-500">{currentDate}</span>
         </div>
 
-        {/* change to "add new event" button */}
-        <div className="group">
-          <button className="border duration-300 hover:shadow shadow-blue-300 inline-flex items-center rounded-lg border-stone-300 p-1.5">
-            <FiPlus className="" />
+        <div onClick={() => setShowModal(true)} className="group">
+          <button className="border hover:shadow hover:bg-stone-100 inline-flex items-center hover:cursor-pointer rounded-lg border-stone-300 p-1.5">
+            <FiPlus />
             <span className="pl-1 text-sm">Add New Event</span>
           </button>
         </div>
       </div>
+
+      {showModal && (
+        <EventForm
+          onClose={() => setShowModal(false)}
+          onSubmit={(data) => {
+            console.log("New event:", data);
+            setShowModal(false);
+          }}
+        />
+      )}
     </div>
   );
 };

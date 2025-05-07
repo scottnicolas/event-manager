@@ -28,7 +28,7 @@ function App() {
       <Route path="/calendarPage" element={<CalendarPage />} />
       <Route path="/attendeesPage" element={<AttendeesPage />} />
       <Route
-        path="/events/:id"
+        path="/events/:eventId"
         element={
           <Dashboard>
             <EventDetailsPage />

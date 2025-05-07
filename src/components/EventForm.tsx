@@ -69,7 +69,7 @@ export const EventForm: React.FC<EventFormProps> = ({
               name="event_name"
               value={formData.event_name}
               onChange={handleChange}
-              className="input input-bordered w-full"
+              className="input text-white input-bordered w-full"
               required
             />
           </div>
@@ -80,7 +80,7 @@ export const EventForm: React.FC<EventFormProps> = ({
               name="start_date"
               value={formData.start_date}
               onChange={handleChange}
-              className="input input-bordered w-full"
+              className="input text-white input-bordered w-full"
               required
             />
           </div>
@@ -91,7 +91,7 @@ export const EventForm: React.FC<EventFormProps> = ({
               name="end_date"
               value={formData.end_date}
               onChange={handleChange}
-              className="input input-bordered w-full"
+              className="input text-white input-bordered w-full"
             />
           </div>
           <div>
@@ -101,7 +101,7 @@ export const EventForm: React.FC<EventFormProps> = ({
               name="event_category"
               value={formData.event_category}
               onChange={handleChange}
-              className="input input-bordered w-full"
+              className="input text-white input-bordered w-full"
             />
           </div>
           <div>
@@ -111,7 +111,7 @@ export const EventForm: React.FC<EventFormProps> = ({
               name="max_attendees"
               value={formData.max_attendees}
               onChange={handleChange}
-              className="input input-bordered w-full"
+              className="input text-white input-bordered w-full"
               min={1}
               required
             />
