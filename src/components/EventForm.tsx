@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Event } from "../types/Event";
 import { createEvent, updateEvent } from "../services/eventService";
-import { QueryClient } from "@tanstack/react-query";
 
 interface EventFormProps {
   event?: Event | null;
@@ -17,11 +16,7 @@ interface EventFormState {
   max_attendees: number;
 }
 
-export const EventForm: React.FC<EventFormProps> = ({
-  event,
-  onSubmit,
-  onClose,
-}) => {
+export const EventForm: React.FC<EventFormProps> = ({ event, onClose }) => {
   const [formData, setFormData] = useState<EventFormState>({
     event_name: "",
     start_date: "",
