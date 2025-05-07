@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Event } from "../types/Event";
 import { fetchEvents, deleteEvent } from "../services/eventService";
 import { Link } from "react-router-dom";
-import { FiCalendar, FiEdit, FiList } from "react-icons/fi";
+import { FiCalendar, FiEdit, FiList, FiTrash2 } from "react-icons/fi";
 
 export const EventList: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -59,24 +59,24 @@ export const EventList: React.FC = () => {
           <tbody>
             {events.map((event) => (
               <tr key={event.event_id}>
-                <td className=" border-b border-r border-stone-300 p-2">
-                  {event.event_name}
-                </td>
-                <td className="border-t border-b border-stone-300 p-2">
-                  {new Date(event.start_date).toLocaleDateString()}
-                </td>
-                <td className="border-l border-b border-stone-300 p-2 flex gap-2">
+                <td className="border-b border-r border-stone-300 p-2">
                   <Link
                     to={`/events/${event.event_id}`}
-                    className="text-blue-600 underline"
+                    className="underline underline-offset-2 decoration-stone-300"
                   >
-                    View
+                    {event.event_name}
                   </Link>
-                  <button
-                    onClick={() => handleDelete(event.event_id)}
-                    className="text-red-600 underline"
-                  >
-                    Delete
+                </td>
+                <td className="border-t border-b border-stone-300 p-2">
+                  {new Date(event.start_date).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </td>
+                <td className="border-l border-b border-stone-300 p-3 flex gap-2">
+                  <button onClick={() => handleDelete(event.event_id)}>
+                    <FiTrash2 />
                   </button>
                 </td>
               </tr>

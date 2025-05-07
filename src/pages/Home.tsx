@@ -57,7 +57,7 @@ export const Home: React.FC = () => {
         <h2 className="text-xl pl-2 font-bold">Upcoming Events</h2>
       </div>
 
-      <div className="border border-stone-100 shadow rounded-lg p-6">
+      <div className="border border-stone-200 rounded-lg p-6 lg:px-12">
         {upcomingEvents.length === 0 ? (
           <p className="text-gray-500">No upcoming events.</p>
         ) : (
@@ -65,12 +65,21 @@ export const Home: React.FC = () => {
             {upcomingEvents.map((event) => (
               <li
                 key={event.event_id}
-                className="flex justify-between items-center border-b border-stone-300 py-1"
+                className="grid grid-cols-3 lg:grid-cols-7 items-top py-1"
               >
-                <span>{event.event_name}</span>
-                <span className="text-sm text-gray-500">
-                  {new Date(event.start_date).toLocaleDateString()}
+                <span className="text-xs col-span-1 text-gray-500">
+                  {new Date(event.start_date)
+                    .toLocaleDateString("en-US", {
+                      weekday: "long",
+                      month: "long",
+                      day: "numeric",
+                    })
+                    .replace(",", "")}
                 </span>
+                <button className="hover:bg-stone-100 inline-flex items-center col-span-2 lg:col-span-6 rounded-md text-left px-1 py-1 ml-6">
+                  <div className="w-1 h-full mr-3 bg-blue-400 rounded-lg"></div>
+                  <span>{event.event_name}</span>
+                </button>
               </li>
             ))}
           </ul>

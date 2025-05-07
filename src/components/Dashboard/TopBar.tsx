@@ -19,6 +19,15 @@ function greeting() {
   return greetings[index];
 }
 
+function emoji() {
+  const emojis = ["☕", "🤠", "🌇"];
+  const currentHour = new Date().getHours();
+  let index =
+    currentHour >= 12 && currentHour < 17 ? 1 : currentHour >= 17 ? 2 : 0;
+
+  return emojis[index];
+}
+
 export const TopBar = () => {
   const [currentDate] = useState(getDate());
 
@@ -26,7 +35,7 @@ export const TopBar = () => {
     <div className="border-b px-4 mb-2 mt-2 pb-4 border-stone-300">
       <div className="flex items-center justify-between p-0.5">
         <div>
-          <span className="text-sm font-bold block">{`${greeting()}, John 🤠`}</span>
+          <span className="text-sm font-bold block">{`${greeting()}, John ${emoji()}`}</span>
           <span className="text-xs block text-stone-500">{currentDate}</span>
         </div>
 
