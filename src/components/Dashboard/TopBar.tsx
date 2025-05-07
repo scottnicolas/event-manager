@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import EventForm from "../EventForm";
+import { createEvent } from "../../services/eventService";
+import { useQueryClient } from "@tanstack/react-query";
 
 function getDate() {
   const today = new Date();
@@ -32,6 +34,7 @@ function emoji() {
 export const TopBar = () => {
   const [currentDate] = useState(getDate());
   const [showModal, setShowModal] = useState(false);
+  const queryClient = useQueryClient();
 
   return (
     <div className="border-b px-4 mb-2 mt-2 pb-4 border-stone-300">
@@ -52,9 +55,15 @@ export const TopBar = () => {
       {showModal && (
         <EventForm
           onClose={() => setShowModal(false)}
-          onSubmit={(data) => {
-            console.log("New event:", data);
-            setShowModal(false);
+          onSubmit={async (data) => {
+            try {
+              await createEvent(data);
+              await queryClient.invalidateQueries({ queryKey: ["events"] });
+              setShowModal(false);
+            } catch (err) {
+              console.error("Failed to create event:", err);
+              alert("Error creating event. Please try again.");
+            }
           }}
         />
       )}

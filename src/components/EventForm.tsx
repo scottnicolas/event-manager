@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Event } from "../types/Event";
+import { createEvent, updateEvent } from "../services/eventService";
+import { QueryClient } from "@tanstack/react-query";
 
 interface EventFormProps {
   event?: Event | null;
@@ -50,9 +52,19 @@ export const EventForm: React.FC<EventFormProps> = ({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    try {
+      if (event) {
+        await updateEvent(event.event_id, formData);
+      } else {
+        await createEvent(formData);
+      }
+
+      onClose();
+    } catch (error) {
+      console.error("Failed to save event:", error);
+    }
   };
 
   return (

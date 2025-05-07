@@ -4,10 +4,13 @@ import { Event } from "../types/Event";
 import { fetchEvents, deleteEvent } from "../services/eventService";
 import { Link } from "react-router-dom";
 import { FiCalendar, FiEdit, FiList, FiTrash2 } from "react-icons/fi";
+import { useQueryClient } from "@tanstack/react-query";
+import EventForm from "./EventForm";
 
 export const EventList: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(false);
+  const [editEvent, setEditEvent] = useState<Event | null>(null);
 
   const loadEvents = async () => {
     setLoading(true);
@@ -26,6 +29,8 @@ export const EventList: React.FC = () => {
       await loadEvents();
     }
   };
+
+  const queryClient = useQueryClient();
 
   return (
     <div className="pb-2 lg:px-28">
@@ -75,14 +80,31 @@ export const EventList: React.FC = () => {
                   })}
                 </td>
                 <td className="border-l border-b border-stone-300 p-3 flex gap-2">
-                  <button onClick={() => handleDelete(event.event_id)}>
-                    <FiTrash2 className="hover:text-red-600 hover:cursor-pointer" />
-                  </button>
+                  <div className="flex gap-2">
+                    <button onClick={() => setEditEvent(event)}>
+                      <FiEdit className="hover:text-blue-600 hover:cursor-pointer" />
+                    </button>
+                    <button onClick={() => handleDelete(event.event_id)}>
+                      <FiTrash2 className="hover:text-red-600 hover:cursor-pointer" />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+      )}
+
+      {editEvent && (
+        <EventForm
+          event={editEvent}
+          onClose={() => setEditEvent(null)}
+          onSubmit={async () => {
+            await loadEvents();
+            setEditEvent(null);
+            await queryClient.invalidateQueries({ queryKey: ["events"] });
+          }}
+        />
       )}
     </div>
   );
