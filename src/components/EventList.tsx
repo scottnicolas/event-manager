@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Event } from "../types/Event";
 import { fetchEvents, deleteEvent } from "../services/eventService";
 import { Link } from "react-router-dom";
+import { FiCalendar, FiEdit, FiList } from "react-icons/fi";
 
 export const EventList: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -27,27 +28,44 @@ export const EventList: React.FC = () => {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Events</h1>
+    <div className="pb-2 lg:px-28">
+      <h1 className="text-4xl font-bold py-6">Events</h1>
       {loading ? (
         <p>Loading events...</p>
       ) : (
-        <table className="table-auto w-full border">
+        <table className="table-auto w-full">
           <thead>
             <tr>
-              <th className="border p-2 text-left">Name</th>
-              <th className="border p-2 text-left">Start Date</th>
-              <th className="border p-2 text-left">Actions</th>
+              <th className="p-2 border-b border-stone-300 text-stone-400 text-left">
+                <div className="inline-flex items-center">
+                  <FiList />
+                  <span className="pl-1">Event</span>
+                </div>
+              </th>
+              <th className="p-2 text-stone-400 text-left">
+                <div className="inline-flex items-center">
+                  <FiCalendar />
+                  <span className="pl-1">Start Date</span>
+                </div>
+              </th>
+              <th className="p-2 border-b border-stone-300 text-stone-400 text-left">
+                <div className="inline-flex items-center">
+                  <FiEdit />
+                  <span className="pl-1">Actions</span>
+                </div>
+              </th>
             </tr>
           </thead>
           <tbody>
             {events.map((event) => (
               <tr key={event.event_id}>
-                <td className="border p-2">{event.event_name}</td>
-                <td className="border p-2">
+                <td className=" border-b border-r border-stone-300 p-2">
+                  {event.event_name}
+                </td>
+                <td className="border-t border-b border-stone-300 p-2">
                   {new Date(event.start_date).toLocaleDateString()}
                 </td>
-                <td className="border p-2 flex gap-2">
+                <td className="border-l border-b border-stone-300 p-2 flex gap-2">
                   <Link
                     to={`/events/${event.event_id}`}
                     className="text-blue-600 underline"

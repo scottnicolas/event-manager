@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FiCalendar } from "react-icons/fi";
+import { FiPlus } from "react-icons/fi";
 
 function getDate() {
   const today = new Date();
@@ -26,14 +26,17 @@ export const TopBar = () => {
     <div className="border-b px-4 mb-2 mt-2 pb-4 border-stone-300">
       <div className="flex items-center justify-between p-0.5">
         <div>
-          <span className="text-sm font-bold block">{`${greeting()}, John!`}</span>
+          <span className="text-sm font-bold block">{`${greeting()}, John 🤠`}</span>
           <span className="text-xs block text-stone-500">{currentDate}</span>
         </div>
 
-        <button className="flex text-sm items-center gap-2 rounded-lg bg-white border border-stone-300 transition-colors hover:bg-cyan-100 hover:text-cyan-700 px-3 py-1.5">
-          <FiCalendar />
-          <span>Prev 6 Months</span>
-        </button>
+        {/* change to "add new event" button */}
+        <div className="group">
+          <button className="border duration-300 hover:shadow shadow-blue-300 inline-flex items-center rounded-lg border-stone-300 p-1.5">
+            <FiPlus className="" />
+            <span className="pl-1 text-sm">Add New Event</span>
+          </button>
+        </div>
       </div>
     </div>
   );

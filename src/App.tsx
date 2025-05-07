@@ -4,7 +4,7 @@ import { Home } from "./pages/Home";
 import { AttendeesPage } from "./pages/AttendeesPage";
 import { Dashboard } from "./components/Dashboard/Dashboard";
 import { EventList } from "./components/EventList";
-import EventDetailsPage from "./pages/EventDetailsPage";
+import { EventDetailsPage } from "./pages/EventDetailsPage";
 
 function App() {
   return (
